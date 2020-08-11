@@ -45,16 +45,19 @@ public class EchoCgiTest {
 
         private final NetMsgHeader msgXp = new NetMsgHeader();
 
-        // 接收server端的消息，并打印出来
+        /**
+         * 接收server端的消息，并打印出来
+         * @param ctx
+         * @param msg
+         * @throws Exception
+         */
         @Override
         public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
             try {
                 msgXp.decode(new ByteBufInputStream((ByteBuf) msg));
-//                Log.i(TAG, "resp recevied! seq=%d", msgXp.seq);
                 System.out.println("resp recevied! seq=" + msgXp.seq);;
 
                 final Main.HelloResponse response = Main.HelloResponse.parseFrom(msgXp.body);
-//                Log.i(TAG, "resp decoded, resp.retcode=%d, resp.err=%s", response.getRetcode(), response.getErrmsg());
                 System.out.println("resp decoded, resp.retcode=" + response.getRetcode() + ", resp.err=" + response.getErrmsg());
 
             } finally {
@@ -62,10 +65,13 @@ public class EchoCgiTest {
             }
         }
 
-        // 连接成功后，向server发送消息
+        /**
+         * 连接成功后，向server发送消息
+         * @param ctx
+         * @throws Exception
+         */
         @Override
         public void channelActive(ChannelHandlerContext ctx) throws Exception {
-//            Log.i(TAG, "connected to server!");
             System.out.println("connected to server!");
 
             final Main.HelloRequest request = Main.HelloRequest.newBuilder()
@@ -76,13 +82,11 @@ public class EchoCgiTest {
             msgXp.cmdId = Main.CmdID.CMD_ID_HELLO_VALUE;
             msgXp.body = request.toByteArray();
 
-            //
             byte[] toSendBuf = msgXp.encode();
             ByteBuf encoded = ctx.alloc().buffer(toSendBuf.length);
             encoded.writeBytes(toSendBuf);
             ctx.writeAndFlush(encoded);
 
-//            Log.i(TAG, "write and flush!");
             System.out.println("write and flush!");
         }
     }

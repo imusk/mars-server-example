@@ -41,7 +41,6 @@ public class GetConversationListCgiTest {
 
         List<Main.Conversation> list = response.getListList();
         for (Main.Conversation c : list) {
-//            Log.d("test", "get conversation: name=[%s], topic=[%s], notice=[%s]", c.getName(), c.getTopic(), c.getNotice());
             System.out.println("get conversation: name=[" + c.getName() + "], topic=[" + c.getTopic() + "], notice=[" + c.getNotice() + "]");
         }
 
